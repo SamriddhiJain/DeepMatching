@@ -13,8 +13,9 @@ def mse(imageA, imageB):
 	# the 'Mean Squared Error' between the two images is the
 	# sum of the squared difference between the two images;
 	# NOTE: the two images must have the same dimension
+	err1 = np.sum((imageA.astype("float") ** 2 ))
 	err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
-	err /= float(imageA.shape[0] * imageA.shape[1])
+	err = err/err1 
 	
 	# return the MSE, the lower the error, the more "similar"
 	# the two images are
@@ -39,8 +40,8 @@ def matchingScore(output,num):
 	return scoreM
 
 
-path1 = "input/"    #video frames path
-path2 = "input/in000001.jpg"   #image path 
+path1 = "output/"    #video frames path
+path2 = "prop.png"   #image path 
 
 # template image
 image = cv2.imread(path2)
@@ -69,7 +70,7 @@ for index, file in enumerate(listing):
 
 		if index == (files-1):
 			index = index+1
-		if(diff > 15.0 or index==files):
+		if(diff > 0.1 or index==files):
 			print "Shot from "+ str(cnt)+" to "+ str(index-1) #boundary
 
 			frame=shot()
@@ -87,22 +88,26 @@ for index, file in enumerate(listing):
 		im1=im2
 
 #video-writer
-'''height, width = im1.shape
-fourcc = cv2.cv.CV_FOURCC(*'mp4v') # Be sure to use lower case
-out = cv2.VideoWriter('result.mp4', fourcc, 20.0, (width, height))'''
+height, width = im1.shape
+fourcc = cv2.cv.CV_FOURCC(*'MJPG') # Be sure to use lower case
+out = cv2.VideoWriter('result.avi', fourcc, 10.0, (width, height))
 
 for f in frames:
 	print f.matchingPickedPath
 
 for f in frames:
-	#cmd = './deepmatching-static climb1.png climb2.png'
 	print " "
 	print "Matching: " + f.matchingPickedPath
-	cmd = './deepmatching-static '+ f.matchingPickedPath + ' ' + path2
+
+	cmd = './deepmatching-static '+ path2 + ' ' + f.matchingPickedPath
 
 	output = subprocess.check_output(cmd, shell=True)
 	output = output.split('\n')
 
 	score = matchingScore(output,numberOfPatches)
 	if(score >= 0.15):
+		im1 = cv2.imread(f.matchingPickedPath)
+		out.write(im1)
 		print "Match found with score: " + str(score)
+
+out.release()
