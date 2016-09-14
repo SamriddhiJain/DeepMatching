@@ -1,3 +1,8 @@
+Currently using the executable file in python code, will update once code is compiled.
+
+** Below are the directions to use the deepmatching code **
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 Implementation of the Deep Matching algorithm, published at ICCV 2013 in
 "DeepFlow: Large displacement optical flow with deep matching" by Philippe 
 Weinzaepfel, Jerome Revaud, Zaid Harchaoui and Cordelia Schmid.
